@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, CheckEmailDto, LoginDto } from './dto';
 
@@ -22,5 +22,10 @@ export class AuthController {
   @Post('check-email')
   checkEmail(@Body() dto: CheckEmailDto) {
     return this.authService.checkEmail(dto);
+  }
+
+  @Get('Users')
+  getAllUser(){
+    return this.authService.allUser()
   }
 }
