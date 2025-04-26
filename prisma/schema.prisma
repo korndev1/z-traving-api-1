@@ -26,3 +26,14 @@ model User {
 
   @@map("users")
 }
+
+model Admin {
+  id Int @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  userName String @unique
+  hash String
+
+  @@map("admin")
+}

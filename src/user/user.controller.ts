@@ -2,7 +2,7 @@ import { Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags,ApiBody } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {

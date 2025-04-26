@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, CheckEmailDto, LoginDto } from './dto';
+import { AdinAuthDto, AuthDto, CheckEmailDto, LoginDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { error } from 'console';
@@ -38,6 +38,26 @@ export class AuthService {
     throw error;
   }
 
+  async signupAdmin(dto: AdinAuthDto) {
+    const hash = await argon.hash(dto.password);
+    try {
+      const user = await this.prisma.admin.create({
+        data: {
+          userName: dto.userName,
+          hash: hash,
+        },
+      });
+      delete user.hash;
+
+      return {statusCode:200,message: 'create account success'}
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        return {status:401, message:"username is already "}
+      } 
+    }
+    throw error
+  }
+
   async signin(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -54,6 +74,24 @@ export class AuthService {
     }
 
     return this.signToken(user.id, user.email);
+  }
+
+  async signinAdmin(dto: AdinAuthDto) {
+    const user = await this.prisma.admin.findUnique({
+      where: {
+        userName: dto.userName,
+      },
+    });
+    if (!user) {
+      throw new ForbiddenException('Credentials incorrect');
+    }
+
+    const pwMatch = await argon.verify(user.hash, dto.password);
+    if (!pwMatch) {
+      throw new ForbiddenException('Credentials incorrect');
+    }
+
+    return {status:200,message:"Login success"}
   }
 
   async checkEmail(dto: CheckEmailDto) {
