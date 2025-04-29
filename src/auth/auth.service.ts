@@ -52,8 +52,10 @@ export class AuthService {
       return {statusCode:200,message: 'create account success'}
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        return {status:401, message:"username is already "}
-      } 
+        if (error.code == 'P2002') {
+          throw new ForbiddenException('Credentials Taken');
+        }
+      }
     }
     throw error
   }
@@ -90,8 +92,9 @@ export class AuthService {
     if (!pwMatch) {
       throw new ForbiddenException('Credentials incorrect');
     }
+    return {statusCode:200,message:"Login success",access_token:(await this.signToken(user.id, user.userName)).access_token}
 
-    return {status:200,message:"Login success"}
+    // return {statusCode:200,message:"Login success",access_token:this.signToken(user.id, user.userName)}
   }
 
   async checkEmail(dto: CheckEmailDto) {
@@ -104,6 +107,19 @@ export class AuthService {
       return { data: 'already' };
     } else {
       return { data: 'not use' };
+    }
+  }
+
+  async checkUsername(dto: AdinAuthDto) {
+    const checkEmail = await this.prisma.admin.findUnique({
+      where: {
+        userName: dto.userName,
+      },
+    });
+    if (checkEmail) {
+      return { statusCode:401,data: 'already' };
+    } else {
+      return { statusCode:200,data: 'not use' };
     }
   }
 
