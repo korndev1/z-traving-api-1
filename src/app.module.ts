@@ -4,9 +4,21 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { UploadModule } from './upload/upload.module';
+import { RecipeService } from './recipe/recipe.service';
+import { RecipeController } from './recipe/recipe.controller';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, UserModule],
-  controllers: [UserController],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UploadModule,
+    AuthModule,
+    PrismaModule,
+    UserModule,
+    RecipeModule,
+  ],
+  controllers: [UserController, RecipeController],
+  providers: [RecipeService],
 })
 export class AppModule {}
