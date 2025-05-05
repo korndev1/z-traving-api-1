@@ -8,6 +8,7 @@ import { UploadModule } from './upload/upload.module';
 import { RecipeService } from './recipe/recipe.service';
 import { RecipeController } from './recipe/recipe.controller';
 import { RecipeModule } from './recipe/recipe.module';
+import { IngredientsModule } from './ingredients/ingredients.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RecipeModule } from './recipe/recipe.module';
     PrismaModule,
     UserModule,
     RecipeModule,
+    IngredientsModule,
   ],
   controllers: [UserController, RecipeController],
   providers: [RecipeService],

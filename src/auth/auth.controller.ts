@@ -1,7 +1,8 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AdinAuthDto, AuthDto, CheckEmailDto, LoginDto } from './dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth')
 
 @Controller('auth')
 export class AuthController {
